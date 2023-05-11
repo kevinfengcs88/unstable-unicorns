@@ -6,7 +6,7 @@ import { initializeDeck } from './card';
 import { CONSTANTS } from './constants';
 import { executeDo } from './do';
 import { Effect } from './effect';
-import _ from 'underscore';
+import * as _ from 'underscore';
 import type { NeighDiscussion } from './neigh';
 
 export type { Ctx };
@@ -268,15 +268,19 @@ function playCard(G: UnstableUnicornsGame, ctx: Ctx, protagonist: PlayerID, card
     G.countPlayedCardsInActionPhase = G.countPlayedCardsInActionPhase + 1;
     G.hand[protagonist] = _.without(G.hand[protagonist], cardID);
 
+    const playerState: { [key: string]: { vote: "no_neigh" | "undecided" } } = {};
+    for (const player of G.players) {
+        playerState[player.id] = { vote: player.id === protagonist ? "no_neigh" : "undecided" };
+    }
+
     if (G.playerEffects[protagonist].findIndex(f => f.effect.key === "your_cards_cannot_be_neighed") > -1) {
         enter(G, ctx, { playerID: protagonist, cardID });
     } else {
         // resolve neigh
         G.neighDiscussion = {
-            cardID, protagonist, rounds: [{
-                state: "open",
-                playerState: Object.fromEntries(G.players.map(pl => ([pl.id, { vote: pl.id === protagonist ? "no_neigh" : "undecided" }])))
-            }],
+            cardID,
+            protagonist,
+            rounds: [{ state: "open", playerState }],
             target: protagonist,
         };
     }
@@ -290,10 +294,15 @@ function playUpgradeDowngradeCard(G: UnstableUnicornsGame, ctx: Ctx, protagonist
         enter(G, ctx, { playerID: targetPlayer, cardID });
     } else {
         // resolve neigh
+        const playerState: { [key: string]: { vote: "no_neigh" | "undecided" } } = {};
+        for (const player of G.players) {
+            playerState[player.id] = { vote: player.id === protagonist ? "no_neigh" : "undecided" };
+        }
+
         G.neighDiscussion = {
             cardID, protagonist, rounds: [{
                 state: "open",
-                playerState: Object.fromEntries(G.players.map(pl => ([pl.id, { vote: pl.id === protagonist ? "no_neigh" : "undecided" }]))),
+                playerState: playerState,
             }],
             target: targetPlayer,
         };
@@ -313,11 +322,15 @@ function playNeigh(G: UnstableUnicornsGame, ctx: Ctx, cardID: CardID, protagonis
         }
         // there was no neigh round yet
         // hence neigh the round and add a next round
-        round.playerState[protagonist] = { vote: "neigh" };
+        const playerState: { [key: string]: { vote: "no_neigh" | "undecided" | "neigh" } } = {};
+        for (const player of G.players) {
+            playerState[player.id] = { vote: player.id === protagonist ? "no_neigh" : "undecided" };
+        }
+        round.playerState = playerState;
         round.state = "neigh";
         G.neighDiscussion.rounds.push({
             state: "open",
-            playerState: Object.fromEntries(G.players.map(pl => ([pl.id, { vote: pl.id === protagonist ? "no_neigh" : "undecided" }])))
+            playerState: playerState,
         });
     }
 }

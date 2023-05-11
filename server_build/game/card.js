@@ -10,7 +10,7 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.isUnicorn = exports.initializeDeck = void 0;
 var Cards = [{
         title: "Baby Unicorn",
@@ -149,15 +149,15 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "steal",
-                                            info: { type: "upgrade" }
+                                            info: { type: "upgrade" },
                                         },
                                         ui: {
                                             type: "card_to_card"
@@ -165,7 +165,7 @@ var Cards = [{
                                     }]
                             }],
                         mandatory: false,
-                        endTurnImmediately: false
+                        endTurnImmediately: false,
                     }
                 }
             }],
@@ -180,20 +180,20 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
-                                            key: "pullRandom"
+                                        do: {
+                                            key: "pullRandom",
                                         },
                                         ui: { type: "card_to_player" }
                                     }]
                             }],
                         mandatory: false,
-                        endTurnImmediately: false
+                        endTurnImmediately: false,
                     }
                 }
             }],
@@ -208,26 +208,26 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
-                                            key: "makeSomeoneDiscard"
+                                        do: {
+                                            key: "makeSomeoneDiscard",
                                         },
                                         ui: { type: "card_to_player" }
                                     }]
                             }],
                         mandatory: false,
-                        endTurnImmediately: false
+                        endTurnImmediately: false,
                     }
                 }
             }, {
                 trigger: "this_destroyed_or_sacrificed",
-                "do": {
-                    type: "return_to_hand"
+                do: {
+                    type: "return_to_hand",
                 }
             }],
         description: {
@@ -242,7 +242,7 @@ var Cards = [{
         count: 2,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
@@ -250,7 +250,7 @@ var Cards = [{
                                 // in this case the protagonist may destroy an upgrade card or sacrifice a downgrade card
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "destroy",
                                             info: { type: "my_downgrade_other_upgrade" }
                                         },
@@ -258,7 +258,7 @@ var Cards = [{
                                     }]
                             }],
                         mandatory: false,
-                        endTurnImmediately: false
+                        endTurnImmediately: false,
                     }
                 }
             }],
@@ -273,13 +273,13 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "search",
                                             info: { type: "upgrade" }
                                         },
@@ -287,7 +287,7 @@ var Cards = [{
                                     }]
                             }],
                         mandatory: false,
-                        endTurnImmediately: false
+                        endTurnImmediately: false,
                     }
                 }
             }],
@@ -302,14 +302,14 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         // typical action chain: sacrifice to revive
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "sacrifice",
                                             info: { type: "unicorn" }
                                         },
@@ -318,7 +318,7 @@ var Cards = [{
                             }, {
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "revive",
                                             info: { type: "unicorn" }
                                         },
@@ -326,7 +326,7 @@ var Cards = [{
                                     }]
                             }],
                         mandatory: false,
-                        endTurnImmediately: false
+                        endTurnImmediately: false,
                     }
                 }
             }],
@@ -371,14 +371,14 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_effect",
                     info: { key: "you_cannot_play_neigh" },
                     ui: { type: "none" }
                 }
             }, {
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_effect",
                     info: { key: "count_as_two" },
                     ui: { type: "none" }
@@ -395,16 +395,16 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "draw",
                                             info: {
-                                                count: 1
+                                                count: 1,
                                             }
                                         },
                                         ui: { type: "click_on_drawPile" }
@@ -416,8 +416,8 @@ var Cards = [{
                 }
             }, {
                 trigger: "this_destroyed_or_sacrificed",
-                "do": {
-                    type: "return_to_hand"
+                do: {
+                    type: "return_to_hand",
                 }
             }],
         description: {
@@ -431,13 +431,13 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "all",
-                                        "do": {
+                                        do: {
                                             key: "discard",
                                             info: { count: 1, type: "any" }
                                         },
@@ -462,13 +462,13 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "addFromDiscardPileToHand",
                                             info: { type: "magic" }
                                         },
@@ -501,13 +501,13 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "addFromDiscardPileToHand",
                                             info: { type: "unicorn" }
                                         },
@@ -520,8 +520,8 @@ var Cards = [{
                 }
             }, {
                 trigger: "this_destroyed_or_sacrificed",
-                "do": {
-                    type: "return_to_hand"
+                do: {
+                    type: "return_to_hand",
                 }
             }],
         description: {
@@ -535,20 +535,20 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
-                                            key: "reviveFromNursery"
+                                        do: {
+                                            key: "reviveFromNursery",
                                         },
                                         ui: { type: "single_action_popup", info: { singleActionText: "Revive Baby Unicorn" } }
                                     }]
                             }],
                         mandatory: false,
-                        endTurnImmediately: false
+                        endTurnImmediately: false,
                     }
                 }
             }],
@@ -563,13 +563,13 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "returnToHand",
                                             info: { who: "another" }
                                         },
@@ -592,13 +592,13 @@ var Cards = [{
         count: 2,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "auto",
                     info: {
-                        key: "sacrifice_all_downgrades"
+                        key: "sacrifice_all_downgrades",
                     },
                     ui: { type: "none" }
-                }
+                },
             }],
         description: {
             en: "When this card enters your Stable, SACRIFICE all Downgrade cards in your Stable.",
@@ -611,13 +611,13 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "discard",
                                             info: { count: 2, type: "unicorn" }
                                         },
@@ -626,7 +626,7 @@ var Cards = [{
                             }, {
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "revive",
                                             info: { type: "unicorn" }
                                         },
@@ -649,7 +649,7 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_effect",
                     info: { key: "basic_unicorns_can_only_join_your_stable" },
                     ui: { type: "none" }
@@ -666,18 +666,18 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "bringToStable",
                                             info: { type: "basic_unicorn" }
                                         },
                                         ui: {
-                                            type: "single_action_popup", info: { singleActionText: "Bring basic unicorn to stable" }
+                                            type: "single_action_popup", info: { singleActionText: "Bring basic unicorn to stable" },
                                         }
                                     }]
                             }],
@@ -697,13 +697,13 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "begin_of_turn",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "destroy",
                                             info: { type: "unicorn" }
                                         },
@@ -713,7 +713,7 @@ var Cards = [{
                                     }]
                             }],
                         mandatory: false,
-                        endTurnImmediately: true
+                        endTurnImmediately: true,
                     }
                 }
             }],
@@ -728,13 +728,13 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "discard",
                                             info: { count: 1, type: "any" }
                                         },
@@ -743,7 +743,7 @@ var Cards = [{
                             }, {
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "steal",
                                             info: { type: "unicorn" }
                                         },
@@ -766,13 +766,13 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "search",
                                             info: { type: "downgrade" }
                                         },
@@ -795,13 +795,13 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "begin_of_turn",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "discard",
                                             info: { type: "any", count: 1 }
                                         },
@@ -810,8 +810,8 @@ var Cards = [{
                             }, {
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
-                                            key: "pullRandom"
+                                        do: {
+                                            key: "pullRandom",
                                         },
                                         ui: { type: "card_to_player" }
                                     }]
@@ -832,13 +832,13 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "begin_of_turn",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "discard",
                                             info: { type: "any", count: 1 }
                                         },
@@ -847,7 +847,7 @@ var Cards = [{
                             }, {
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "sacrifice", info: { type: "downgrade" }
                                         },
                                         ui: { type: "card_to_card" }
@@ -869,13 +869,13 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "begin_of_turn",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "discard",
                                             info: { type: "any", count: 1 }
                                         },
@@ -884,7 +884,7 @@ var Cards = [{
                             }, {
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "revive", info: { type: "unicorn" }
                                         },
                                         ui: { type: "single_action_popup", info: { singleActionText: "Revive" } }
@@ -907,13 +907,13 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "addFromDiscardPileToHand",
                                             info: { type: "neigh" }
                                         },
@@ -929,8 +929,8 @@ var Cards = [{
                 }
             }, {
                 trigger: "this_destroyed_or_sacrificed",
-                "do": {
-                    type: "return_to_hand"
+                do: {
+                    type: "return_to_hand",
                 }
             }],
         description: {
@@ -944,13 +944,13 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "search",
                                             info: { type: "narwhal" }
                                         },
@@ -973,13 +973,13 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "draw",
                                             info: { count: 2 }
                                         },
@@ -988,7 +988,7 @@ var Cards = [{
                             }, {
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "discard",
                                             info: { count: 1, type: "any" }
                                         },
@@ -1030,7 +1030,7 @@ var Cards = [{
         count: 2,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_effect",
                     info: { key: "your_cards_cannot_be_neighed" },
                     ui: { type: "none" }
@@ -1047,13 +1047,13 @@ var Cards = [{
         count: 3,
         on: [{
                 trigger: "begin_of_turn",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "discard",
                                             info: { count: 2, type: "any" }
                                         },
@@ -1062,7 +1062,7 @@ var Cards = [{
                             }, {
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "destroy",
                                             info: { type: "unicorn" }
                                         },
@@ -1070,7 +1070,7 @@ var Cards = [{
                                     }]
                             }],
                         mandatory: false,
-                        endTurnImmediately: false
+                        endTurnImmediately: false,
                     }
                 }
             }],
@@ -1085,13 +1085,13 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "begin_of_turn",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "discard",
                                             info: { count: 3, type: "any" }
                                         },
@@ -1100,7 +1100,7 @@ var Cards = [{
                             }, {
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "steal",
                                             info: { type: "unicorn" }
                                         },
@@ -1108,7 +1108,7 @@ var Cards = [{
                                     }]
                             }],
                         mandatory: false,
-                        endTurnImmediately: false
+                        endTurnImmediately: false,
                     }
                 }
             }],
@@ -1123,7 +1123,7 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_effect",
                     info: { key: "your_unicorns_cannot_be_destroyed" },
                     ui: { type: "none" }
@@ -1131,7 +1131,7 @@ var Cards = [{
             }],
         description: {
             en: "Your Unicorn cards cannot be destroyed.",
-            de: "Deine Einhörner können nicht zerstört werden"
+            de: "Deine Einhörner können nicht zerstört werden",
         }
     }, {
         title: "Glitter Bomb",
@@ -1140,13 +1140,13 @@ var Cards = [{
         count: 2,
         on: [{
                 trigger: "begin_of_turn",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "sacrifice",
                                             info: { type: "any" }
                                         },
@@ -1155,7 +1155,7 @@ var Cards = [{
                             }, {
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "destroy",
                                             info: { type: "any" }
                                         },
@@ -1163,7 +1163,7 @@ var Cards = [{
                                     }]
                             }],
                         mandatory: false,
-                        endTurnImmediately: false
+                        endTurnImmediately: false,
                     }
                 }
             }],
@@ -1194,7 +1194,7 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "begin_of_turn",
-                "do": {
+                do: {
                     type: "add_effect",
                     info: { key: "double_dutch" },
                     ui: { type: "none" }
@@ -1211,13 +1211,13 @@ var Cards = [{
         count: 3,
         on: [{
                 trigger: "begin_of_turn",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "discard",
                                             info: { type: "any", count: 1 }
                                         },
@@ -1228,7 +1228,7 @@ var Cards = [{
                             }, {
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "draw",
                                             info: { count: 1 }
                                         },
@@ -1236,7 +1236,7 @@ var Cards = [{
                                     }]
                             }],
                         mandatory: false,
-                        endTurnImmediately: false
+                        endTurnImmediately: false,
                     }
                 }
             }],
@@ -1251,13 +1251,13 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "begin_of_turn",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "sacrifice",
                                             info: { type: "any" }
                                         },
@@ -1266,7 +1266,7 @@ var Cards = [{
                             }, {
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "draw",
                                             info: { count: 2 }
                                         },
@@ -1274,7 +1274,7 @@ var Cards = [{
                                     }]
                             }],
                         mandatory: false,
-                        endTurnImmediately: false
+                        endTurnImmediately: false,
                     }
                 }
             }],
@@ -1289,11 +1289,11 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "unicorn_enters_your_stable",
-                "do": {
+                do: {
                     type: "inject_action",
                     info: {
                         instruction: {
-                            "do": {
+                            do: {
                                 key: "discard",
                                 info: { count: 1, type: "any" }
                             },
@@ -1303,11 +1303,11 @@ var Cards = [{
                 }
             }, {
                 trigger: "unicorn_leaves_your_stable",
-                "do": {
+                do: {
                     type: "inject_action",
                     info: {
                         instruction: {
-                            "do": {
+                            do: {
                                 key: "discard",
                                 info: { count: 1, type: "any" }
                             },
@@ -1327,7 +1327,7 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_effect",
                     info: { key: "my_unicorns_are_basic" },
                     ui: { type: "none" }
@@ -1344,7 +1344,7 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_effect",
                     info: { key: "you_cannot_play_upgrades" },
                     ui: { type: "none" }
@@ -1361,7 +1361,7 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_effect",
                     info: { key: "pandamonium" },
                     ui: { type: "none" }
@@ -1379,7 +1379,7 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_effect",
                     info: { key: "you_cannot_play_neigh" },
                     ui: { type: "none" }
@@ -1396,7 +1396,7 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_effect",
                     info: { key: "tiny_stable" },
                     ui: { type: "none" }
@@ -1413,17 +1413,17 @@ var Cards = [{
         count: 3,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": { key: "destroy", info: { type: "unicorn" } },
+                                        do: { key: "destroy", info: { type: "unicorn" } },
                                         ui: {
-                                            type: "card_to_card"
+                                            type: "card_to_card",
                                         }
-                                    }]
+                                    }],
                             }],
                         mandatory: true,
                         endTurnImmediately: false
@@ -1441,25 +1441,25 @@ var Cards = [{
         count: 2,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": { key: "discard", info: { type: "any", count: 2 } },
+                                        do: { key: "discard", info: { type: "any", count: 2 } },
                                         ui: {
-                                            type: "single_action_popup", info: { singleActionText: "Discard to steal" }
+                                            type: "single_action_popup", info: { singleActionText: "Discard to steal" },
                                         }
-                                    }]
+                                    }],
                             }, {
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": { key: "steal", info: { type: "unicorn" } },
+                                        do: { key: "steal", info: { type: "unicorn" } },
                                         ui: {
-                                            type: "card_to_card"
+                                            type: "card_to_card",
                                         }
-                                    }]
+                                    }],
                             }],
                         mandatory: true,
                         endTurnImmediately: false
@@ -1477,17 +1477,17 @@ var Cards = [{
         count: 2,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": { key: "swapHands" },
+                                        do: { key: "swapHands" },
                                         ui: {
-                                            type: "card_to_player"
+                                            type: "card_to_player",
                                         }
-                                    }]
+                                    }],
                             }],
                         mandatory: true,
                         endTurnImmediately: false
@@ -1505,13 +1505,13 @@ var Cards = [{
         count: 2,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "sacrifice",
                                             info: { type: "any" }
                                         },
@@ -1520,7 +1520,7 @@ var Cards = [{
                             }, {
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "destroy",
                                             info: { type: "any", count: 2 }
                                         },
@@ -1528,7 +1528,7 @@ var Cards = [{
                                     }]
                             }],
                         mandatory: true,
-                        endTurnImmediately: false
+                        endTurnImmediately: false,
                     }
                 }
             }],
@@ -1543,13 +1543,13 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "destroy",
                                             info: { type: "my_downgrade_other_upgrade" }
                                         },
@@ -1557,7 +1557,7 @@ var Cards = [{
                                     }]
                             }],
                         mandatory: true,
-                        endTurnImmediately: false
+                        endTurnImmediately: false,
                     }
                 }
             }],
@@ -1572,20 +1572,20 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
-                                            key: "shakeUp"
+                                        do: {
+                                            key: "shakeUp",
                                         },
                                         ui: { type: "single_action_popup", info: { singleActionText: "SHAKE IT UUUUP" } }
                                     }]
                             }],
                         mandatory: true,
-                        endTurnImmediately: false
+                        endTurnImmediately: false,
                     }
                 }
             }],
@@ -1600,20 +1600,20 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
-                                            key: "reset"
+                                        do: {
+                                            key: "reset",
                                         },
                                         ui: { type: "single_action_popup", info: { singleActionText: "Let's reset the game! Yay!" } }
                                     }]
                             }],
                         mandatory: true,
-                        endTurnImmediately: false
+                        endTurnImmediately: false,
                     }
                 }
             }],
@@ -1629,13 +1629,13 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "all",
-                                        "do": {
+                                        do: {
                                             key: "discard",
                                             info: { type: "any", count: 1 }
                                         },
@@ -1644,14 +1644,14 @@ var Cards = [{
                             }, {
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
-                                            key: "shuffleDiscardPileIntoDrawPile"
+                                        do: {
+                                            key: "shuffleDiscardPileIntoDrawPile",
                                         },
                                         ui: { type: "single_action_popup", info: { singleActionText: "Shuffle" } }
                                     }]
                             }],
                         mandatory: true,
-                        endTurnImmediately: false
+                        endTurnImmediately: false,
                     }
                 }
             }],
@@ -1666,13 +1666,13 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "revive",
                                             info: { type: "unicorn" }
                                         },
@@ -1680,7 +1680,7 @@ var Cards = [{
                                     }]
                             }],
                         mandatory: true,
-                        endTurnImmediately: false
+                        endTurnImmediately: false,
                     }
                 }
             }],
@@ -1695,13 +1695,13 @@ var Cards = [{
         count: 1,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "draw",
                                             info: { count: 3 }
                                         },
@@ -1710,7 +1710,7 @@ var Cards = [{
                             }, {
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "discard",
                                             info: { count: 1, type: "any" }
                                         },
@@ -1718,7 +1718,7 @@ var Cards = [{
                                     }]
                             }],
                         mandatory: true,
-                        endTurnImmediately: false
+                        endTurnImmediately: false,
                     }
                 }
             }],
@@ -1733,13 +1733,13 @@ var Cards = [{
         count: 2,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "draw",
                                             info: { count: 2 }
                                         },
@@ -1748,7 +1748,7 @@ var Cards = [{
                             }, {
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
+                                        do: {
                                             key: "discard",
                                             info: { count: 3, type: "any", changeOfLuck: true }
                                         },
@@ -1756,7 +1756,7 @@ var Cards = [{
                                     }]
                             }],
                         mandatory: true,
-                        endTurnImmediately: false
+                        endTurnImmediately: false,
                     }
                 }
             }],
@@ -1771,20 +1771,20 @@ var Cards = [{
         count: 3,
         on: [{
                 trigger: "enter",
-                "do": {
+                do: {
                     type: "add_scene",
                     info: {
                         actions: [{
                                 instructions: [{
                                         protagonist: "owner",
-                                        "do": {
-                                            key: "backKick"
+                                        do: {
+                                            key: "backKick",
                                         },
                                         ui: { type: "card_to_card" }
                                     }]
                             }],
                         mandatory: true,
-                        endTurnImmediately: false
+                        endTurnImmediately: false,
                     }
                 }
             }],
@@ -1851,7 +1851,7 @@ var Cards = [{
         on: [],
         description: {
             en: "💖🙌💅🙌💖💁💁😂😂😂",
-            de: "💖🙌💅🙌💖💁💁😂😂😂"
+            de: "💖🙌💅🙌💖💁💁😂😂😂",
         }
     }, {
         title: "Basic Unicorn",
@@ -1885,7 +1885,7 @@ function initializeDeck() {
                 passive: c.passive,
                 type: c.type,
                 image: c.image,
-                description: c.description
+                description: c.description,
             });
         }
     });

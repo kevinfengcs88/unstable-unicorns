@@ -14,7 +14,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -35,19 +35,19 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 // src/server.js
 var path = require("path");
 var serve = require('koa-static');
 var Server = require('boardgame.io/server').Server;
 var game_1 = require("./game/game");
-var server = Server({ games: [game_1["default"]] });
+var server = Server({ games: [game_1.default] });
 var PORT = process.env.PORT == null ? 8000 : parseInt(process.env.PORT);
 var frontEndAppBuildPath = path.resolve(__dirname, '../build');
 server.app.use(serve(frontEndAppBuildPath));
 var lobbyConfig = {
     apiPort: 8080,
-    apiCallback: function () { return console.log('Running Lobby API on port 8080...'); }
+    apiCallback: function () { return console.log('Running Lobby API on port 8080...'); },
 };
 server.run({ port: PORT, lobbyConfig: lobbyConfig }, function () {
     server.app.use(function (ctx, next) { return __awaiter(void 0, void 0, void 0, function () {

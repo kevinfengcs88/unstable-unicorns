@@ -1,7 +1,7 @@
 import { Card, CardID, isUnicorn, OnEnter, OnEnterAddEffect, OnEnterAddScene } from "./card";
 import { UnstableUnicornsGame, Ctx, Scene, Instruction, Action, _addSceneFromDo } from "./game";
 import type { PlayerID } from "./player";
-import _ from 'underscore';
+import * as _ from 'underscore';
 import { CONSTANTS } from "./constants";
 
 type ParamLeave = {

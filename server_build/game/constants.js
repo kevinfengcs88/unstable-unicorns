@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.CONSTANTS = void 0;
 exports.CONSTANTS = {
     numberOfHandCardsAtStart: 5,

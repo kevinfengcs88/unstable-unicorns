@@ -10,27 +10,29 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports._findInstructionWithID = exports.findMakeSomeoneDiscardTarget = exports.findUnicornSwap2Targets = exports.findUnicornSwap1Targets = exports.findBackKickTargets = exports.findMoveTargets2 = exports.findMoveTargets = exports.findSwapHandsTargets = exports.canBringToStableTargets = exports.findBringToStableTargets = exports.findReturnToHandTargets = exports.findAddFromDiscardPileToHand = exports.findReviveTarget = exports.findSearchTargets = exports.findSacrificeTargets = exports.findDestroyTargets = exports.destroy = exports.findDiscardTargets = exports.canDiscard = exports.discard = exports.pull = exports.findPullRandomTargets = exports.findStealTargets = exports.executeDo = exports.canEnter = exports.enter = void 0;
 var card_1 = require("./card");
 var game_1 = require("./game");
-var underscore_1 = require("underscore");
+var _ = require("underscore");
 var constants_1 = require("./constants");
 function leave(G, ctx, param) {
-    G.stable[param.playerID] = underscore_1["default"].without(G.stable[param.playerID], param.cardID);
-    G.upgradeDowngradeStable[param.playerID] = underscore_1["default"].without(G.upgradeDowngradeStable[param.playerID], param.cardID);
+    G.stable[param.playerID] = _.without(G.stable[param.playerID], param.cardID);
+    G.upgradeDowngradeStable[param.playerID] = _.without(G.upgradeDowngradeStable[param.playerID], param.cardID);
     // remove player effect
-    G.playerEffects[param.playerID] = underscore_1["default"].filter(G.playerEffects[param.playerID], function (eff) { return eff.cardID !== param.cardID; });
+    G.playerEffects[param.playerID] = _.filter(G.playerEffects[param.playerID], function (eff) { return eff.cardID !== param.cardID; });
     // when another unicorn enters your stable
     // inject action after the current action
-    var on = __spreadArrays(G.stable[param.playerID], G.upgradeDowngradeStable[param.playerID]).map(function (c) { return G.deck[c]; }).filter(function (s) { return s.on && s.on.filter(function (o) { return o.trigger === "unicorn_leaves_your_stable"; }).length > 0; });
+    var on = __spreadArray(__spreadArray([], G.stable[param.playerID], true), G.upgradeDowngradeStable[param.playerID], true).map(function (c) { return G.deck[c]; }).filter(function (s) { return s.on && s.on.filter(function (o) { return o.trigger === "unicorn_leaves_your_stable"; }).length > 0; });
     on.forEach(function (card) {
         var _a;
         // all unicorns are basic
@@ -43,27 +45,27 @@ function leave(G, ctx, param) {
             }
         }
         var on = (_a = card.on) === null || _a === void 0 ? void 0 : _a.find(function (o) { return o.trigger === "unicorn_leaves_your_stable"; });
-        if (on["do"].type === "inject_action") {
+        if (on.do.type === "inject_action") {
             var newAction = {
                 type: "action",
                 instructions: [{
-                        id: underscore_1["default"].uniqueId(),
+                        id: _.uniqueId(),
                         protagonist: param.playerID,
                         state: "open",
-                        "do": on["do"].info.instruction["do"],
-                        ui: __assign(__assign({}, on["do"].info.instruction.ui), { info: __assign({ source: card.id }, on["do"].info.instruction.ui.info) })
+                        do: on.do.info.instruction.do,
+                        ui: __assign(__assign({}, on.do.info.instruction.ui), { info: __assign({ source: card.id }, on.do.info.instruction.ui.info) }),
                     }]
             };
             if (_findInstructionInProgress(G) === null) {
                 // no active scene
                 // thus create a mandatory scene
                 var newScene = {
-                    id: underscore_1["default"].uniqueId(),
+                    id: _.uniqueId(),
                     mandatory: true,
                     endTurnImmediately: false,
                     actions: [newAction]
                 };
-                G.script.scenes = __spreadArrays(G.script.scenes, [newScene]);
+                G.script.scenes = __spreadArray(__spreadArray([], G.script.scenes, true), [newScene], false);
             }
             else {
                 // found active scene
@@ -78,13 +80,13 @@ function enter(G, ctx, param) {
     var _a;
     var card = G.deck[param.cardID];
     if (card.type === "upgrade" || card.type === "downgrade") {
-        G.upgradeDowngradeStable[param.playerID] = __spreadArrays(G.upgradeDowngradeStable[param.playerID], [param.cardID]);
+        G.upgradeDowngradeStable[param.playerID] = __spreadArray(__spreadArray([], G.upgradeDowngradeStable[param.playerID], true), [param.cardID], false);
     }
     else if (card.type === "magic") {
         G.temporaryStable[param.playerID] = [param.cardID];
     }
     else {
-        G.stable[param.playerID] = __spreadArrays(G.stable[param.playerID], [param.cardID]);
+        G.stable[param.playerID] = __spreadArray(__spreadArray([], G.stable[param.playerID], true), [param.cardID], false);
     }
     var cardOnEnter = (_a = card.on) === null || _a === void 0 ? void 0 : _a.filter(function (c) { return c.trigger === "enter"; });
     if (cardOnEnter) {
@@ -97,22 +99,22 @@ function enter(G, ctx, param) {
                 }
             }
         }
-        game_1._addSceneFromDo(G, ctx, param.cardID, param.playerID, "enter");
-        cardOnEnter.filter(function (on) { return on["do"].type === "auto"; }).forEach(function (on) {
-            if (on["do"].type === "auto" && on["do"].info.key === "sacrifice_all_downgrades") {
-                var toBeRemoved = underscore_1["default"].filter(G.upgradeDowngradeStable[param.playerID], function (c) {
+        (0, game_1._addSceneFromDo)(G, ctx, param.cardID, param.playerID, "enter");
+        cardOnEnter.filter(function (on) { return on.do.type === "auto"; }).forEach(function (on) {
+            if (on.do.type === "auto" && on.do.info.key === "sacrifice_all_downgrades") {
+                var toBeRemoved = _.filter(G.upgradeDowngradeStable[param.playerID], function (c) {
                     var card = G.deck[c];
                     return card.type === "downgrade";
                 });
-                G.upgradeDowngradeStable[param.playerID] = underscore_1["default"].difference(G.upgradeDowngradeStable[param.playerID], toBeRemoved);
-                G.discardPile = __spreadArrays(G.discardPile, toBeRemoved);
+                G.upgradeDowngradeStable[param.playerID] = _.difference(G.upgradeDowngradeStable[param.playerID], toBeRemoved);
+                G.discardPile = __spreadArray(__spreadArray([], G.discardPile, true), toBeRemoved, true);
             }
         });
-        cardOnEnter.filter(function (on) { return on["do"].type === "add_effect"; }).forEach(function (on) {
-            var doAddEffect = on["do"];
+        cardOnEnter.filter(function (on) { return on.do.type === "add_effect"; }).forEach(function (on) {
+            var doAddEffect = on.do;
             // check if effect has already been added
             if (G.playerEffects[param.playerID].filter(function (o) { return o.cardID === param.cardID && o.effect.key === doAddEffect.info.key; }).length === 0) {
-                G.playerEffects[param.playerID] = __spreadArrays(G.playerEffects[param.playerID], [{ cardID: param.cardID, effect: doAddEffect.info }]);
+                G.playerEffects[param.playerID] = __spreadArray(__spreadArray([], G.playerEffects[param.playerID], true), [{ cardID: param.cardID, effect: doAddEffect.info }], false);
             }
         });
     }
@@ -124,26 +126,26 @@ function enter(G, ctx, param) {
                 var newAction = {
                     type: "action",
                     instructions: [{
-                            id: underscore_1["default"].uniqueId(),
+                            id: _.uniqueId(),
                             protagonist: param.playerID,
                             state: "open",
-                            "do": {
+                            do: {
                                 key: "sacrifice",
                                 info: { type: "unicorn" }
                             },
-                            ui: { type: "click_on_card_in_stable" }
+                            ui: { type: "click_on_card_in_stable" },
                         }]
                 };
                 if (_findInstructionInProgress(G) === null) {
                     // no active scene
                     // thus create a mandatory scene
                     var newScene = {
-                        id: underscore_1["default"].uniqueId(),
+                        id: _.uniqueId(),
                         mandatory: true,
                         endTurnImmediately: false,
                         actions: [newAction]
                     };
-                    G.script.scenes = __spreadArrays(G.script.scenes, [newScene]);
+                    G.script.scenes = __spreadArray(__spreadArray([], G.script.scenes, true), [newScene], false);
                 }
                 else {
                     // found active scene
@@ -156,7 +158,7 @@ function enter(G, ctx, param) {
     }
     // when another unicorn enters your stable
     // inject action after the current action
-    var on = __spreadArrays(G.stable[param.playerID], G.upgradeDowngradeStable[param.playerID]).map(function (c) { return G.deck[c]; }).filter(function (s) { return s.on && s.on.filter(function (o) { return o.trigger === "unicorn_enters_your_stable"; }).length > 0; });
+    var on = __spreadArray(__spreadArray([], G.stable[param.playerID], true), G.upgradeDowngradeStable[param.playerID], true).map(function (c) { return G.deck[c]; }).filter(function (s) { return s.on && s.on.filter(function (o) { return o.trigger === "unicorn_enters_your_stable"; }).length > 0; });
     on.forEach(function (card) {
         var _a;
         // all unicorns are basic
@@ -169,27 +171,27 @@ function enter(G, ctx, param) {
             }
         }
         var on = (_a = card.on) === null || _a === void 0 ? void 0 : _a.find(function (o) { return o.trigger === "unicorn_enters_your_stable"; });
-        if (on["do"].type === "inject_action") {
+        if (on.do.type === "inject_action") {
             var newAction = {
                 type: "action",
                 instructions: [{
-                        id: underscore_1["default"].uniqueId(),
+                        id: _.uniqueId(),
                         protagonist: param.playerID,
                         state: "open",
-                        "do": on["do"].info.instruction["do"],
-                        ui: __assign(__assign({}, on["do"].info.instruction.ui), { info: __assign({ source: card.id }, on["do"].info.instruction.ui.info) })
+                        do: on.do.info.instruction.do,
+                        ui: __assign(__assign({}, on.do.info.instruction.ui), { info: __assign({ source: card.id }, on.do.info.instruction.ui.info) }),
                     }]
             };
             if (_findInstructionInProgress(G) === null) {
                 // no active scene
                 // thus create a mandatory scene
                 var newScene = {
-                    id: underscore_1["default"].uniqueId(),
+                    id: _.uniqueId(),
                     mandatory: true,
                     endTurnImmediately: false,
                     actions: [newAction]
                 };
-                G.script.scenes = __spreadArrays(G.script.scenes, [newScene]);
+                G.script.scenes = __spreadArray(__spreadArray([], G.script.scenes, true), [newScene], false);
             }
             else {
                 // found active scene
@@ -216,7 +218,7 @@ function canEnter(G, ctx, param) {
     }
     if (card.type === "basic") {
         var basic_unicorns_cannot_enter_isActive_1 = false;
-        underscore_1["default"].keys(G.playerEffects).forEach(function (key) {
+        _.keys(G.playerEffects).forEach(function (key) {
             var effect = G.playerEffects[key].find(function (eff) { return eff.effect.key === "basic_unicorns_can_only_join_your_stable"; });
             if (effect && key !== param.playerID) {
                 basic_unicorns_cannot_enter_isActive_1 = true;
@@ -229,15 +231,15 @@ function canEnter(G, ctx, param) {
 exports.canEnter = canEnter;
 function executeDo(G, ctx, instructionID, param) {
     var _a;
-    var _b = exports._findInstructionWithID(G, instructionID), scene = _b[0], action = _b[1], instruction = _b[2];
+    var _b = (0, exports._findInstructionWithID)(G, instructionID), scene = _b[0], action = _b[1], instruction = _b[2];
     if (scene.endTurnImmediately) {
         G.mustEndTurnImmediately = true;
     }
     instruction.state = "in_progress";
     // ui sound
-    G.uiExecuteDo = { id: underscore_1["default"].uniqueId(), cardID: (_a = instruction.ui.info) === null || _a === void 0 ? void 0 : _a.source, "do": instruction["do"] };
+    G.uiExecuteDo = { id: _.uniqueId(), cardID: (_a = instruction.ui.info) === null || _a === void 0 ? void 0 : _a.source, do: instruction.do };
     // execute instruction
-    if (instruction["do"].key === "destroy") {
+    if (instruction.do.key === "destroy") {
         // intervention
         var paramDestroy = param;
         var targetPlayer = findOwnerOfCard(G, paramDestroy.cardID);
@@ -265,30 +267,30 @@ function executeDo(G, ctx, instructionID, param) {
             });*/
         }
         else {
-            KeyToFunc[instruction["do"].key](G, ctx, param);
+            KeyToFunc[instruction.do.key](G, ctx, param);
         }
-        if (instruction["do"].info.count !== undefined) {
-            if (instruction["do"].info.count === 1) {
+        if (instruction.do.info.count !== undefined) {
+            if (instruction.do.info.count === 1) {
                 action.instructions.filter(function (ins) { return ins.protagonist === param.protagonist; }).forEach(function (ins) { return ins.state = "executed"; });
             }
-            instruction["do"].info.count = instruction["do"].info.count - 1;
+            instruction.do.info.count = instruction.do.info.count - 1;
         }
         else {
             action.instructions.filter(function (ins) { return ins.protagonist === param.protagonist; }).forEach(function (ins) { return ins.state = "executed"; });
         }
     }
-    else if (instruction["do"].key === "discard") {
+    else if (instruction.do.key === "discard") {
         discard(G, ctx, param);
-        if (instruction["do"].info.count === 1) {
+        if (instruction.do.info.count === 1) {
             action.instructions.filter(function (ins) { return ins.protagonist === param.protagonist; }).forEach(function (ins) { return ins.state = "executed"; });
-            if (instruction["do"].info.changeOfLuck === true) {
-                G.playerEffects[param.protagonist] = __spreadArrays(G.playerEffects[param.protagonist], [{ effect: { key: "change_of_luck" } }]);
+            if (instruction.do.info.changeOfLuck === true) {
+                G.playerEffects[param.protagonist] = __spreadArray(__spreadArray([], G.playerEffects[param.protagonist], true), [{ effect: { key: "change_of_luck" } }], false);
             }
         }
-        instruction["do"].info.count = instruction["do"].info.count - 1;
+        instruction.do.info.count = instruction.do.info.count - 1;
     }
     else {
-        KeyToFunc[instruction["do"].key](G, ctx, param);
+        KeyToFunc[instruction.do.key](G, ctx, param);
         action.instructions.filter(function (ins) { return ins.protagonist === param.protagonist; }).forEach(function (ins) { return ins.state = "executed"; });
     }
     var actionIndex = scene.actions.findIndex(function (ac) { return ac.instructions.find(function (ins) { return ins.id === instructionID; }); });
@@ -298,15 +300,15 @@ function executeDo(G, ctx, instructionID, param) {
             // handle magic cards
             // if it is the last action of a magic card and it is executed
             // remove from temporary stable and move it to discard pile
-            var tempCard = underscore_1["default"].first(G.temporaryStable[param.protagonist]);
+            var tempCard = _.first(G.temporaryStable[param.protagonist]);
             G.temporaryStable[param.protagonist] = [];
             if (tempCard) {
-                if (instruction["do"].key === "shakeUp") {
+                if (instruction.do.key === "shakeUp") {
                     // do nothing
                     // shake up card is not placed in the discard pile
                 }
                 else {
-                    G.discardPile = __spreadArrays(G.discardPile, [tempCard]);
+                    G.discardPile = __spreadArray(__spreadArray([], G.discardPile, true), [tempCard], false);
                 }
             }
         }
@@ -370,7 +372,7 @@ function pullRandom(G, ctx, param) {
     pull(G, ctx, {
         protagonist: param.protagonist,
         from: param.playerID,
-        handIndex: underscore_1["default"].random(0, G.hand[param.playerID].length - 1)
+        handIndex: _.random(0, G.hand[param.playerID].length - 1)
     });
 }
 function findPullRandomTargets(G, ctx, protagonist) {
@@ -379,8 +381,8 @@ function findPullRandomTargets(G, ctx, protagonist) {
 exports.findPullRandomTargets = findPullRandomTargets;
 function pull(G, ctx, param) {
     var cardToPull = G.hand[param.from][param.handIndex];
-    G.hand[param.from] = underscore_1["default"].without(G.hand[param.from], cardToPull);
-    G.hand[param.protagonist] = __spreadArrays(G.hand[param.protagonist], [cardToPull]);
+    G.hand[param.from] = _.without(G.hand[param.from], cardToPull);
+    G.hand[param.protagonist] = __spreadArray(__spreadArray([], G.hand[param.protagonist], true), [cardToPull], false);
 }
 exports.pull = pull;
 function canPull(G, ctx, protagonist) {
@@ -396,8 +398,8 @@ function findPullTargets(G, ctx, protagonist) {
     return targets;
 }
 function discard(G, ctx, param) {
-    G.hand[param.protagonist] = underscore_1["default"].without(G.hand[param.protagonist], param.cardID);
-    G.discardPile = __spreadArrays(G.discardPile, [param.cardID]);
+    G.hand[param.protagonist] = _.without(G.hand[param.protagonist], param.cardID);
+    G.discardPile = __spreadArray(__spreadArray([], G.discardPile, true), [param.cardID], false);
 }
 exports.discard = discard;
 function canDiscard(G, ctx, protagonist, info) {
@@ -412,7 +414,7 @@ function findDiscardTargets(G, ctx, protagonist, info) {
         }
         else if (info.type === "unicorn") {
             var card = G.deck[cid];
-            if (card_1.isUnicorn(card)) {
+            if ((0, card_1.isUnicorn)(card)) {
                 targets.push({ handIndex: index });
             }
         }
@@ -442,12 +444,12 @@ function destroy(G, ctx, param) {
                 }
             }
         }
-        if (on["do"].type === "return_to_hand") {
-            G.discardPile = underscore_1["default"].without(G.discardPile, param.cardID);
-            G.hand[targetPlayer] = __spreadArrays(G.hand[targetPlayer], [param.cardID]);
+        if (on.do.type === "return_to_hand") {
+            G.discardPile = _.without(G.discardPile, param.cardID);
+            G.hand[targetPlayer] = __spreadArray(__spreadArray([], G.hand[targetPlayer], true), [param.cardID], false);
         }
-        else if (on["do"].type === "add_scene") {
-            game_1._addSceneFromDo(G, ctx, card.id, targetPlayer, "any");
+        else if (on.do.type === "add_scene") {
+            (0, game_1._addSceneFromDo)(G, ctx, card.id, targetPlayer, "any");
         }
     });
 }
@@ -479,7 +481,7 @@ function findDestroyTargets(G, ctx, protagonist, info, sourceCard) {
             G.stable[pl.id].forEach(function (cid) {
                 var _a;
                 var card = G.deck[cid];
-                if (card_1.isUnicorn(card)) {
+                if ((0, card_1.isUnicorn)(card)) {
                     if (sourceCard && G.deck[sourceCard].type === "magic" && ((_a = card.passive) === null || _a === void 0 ? void 0 : _a.includes("cannot_be_destroyed_by_magic"))) {
                         return;
                     }
@@ -505,7 +507,7 @@ function findDestroyTargets(G, ctx, protagonist, info, sourceCard) {
             G.stable[pl.id].forEach(function (cid) {
                 var _a;
                 var card = G.deck[cid];
-                if (card_1.isUnicorn(card)) {
+                if ((0, card_1.isUnicorn)(card)) {
                     if (sourceCard && G.deck[sourceCard].type === "magic" && ((_a = card.passive) === null || _a === void 0 ? void 0 : _a.includes("cannot_be_destroyed_by_magic"))) {
                         return;
                     }
@@ -544,12 +546,12 @@ function sacrifice(G, ctx, param) {
                 }
             }
         }
-        if (on["do"].type === "return_to_hand") {
-            G.discardPile = underscore_1["default"].without(G.discardPile, param.cardID);
-            G.hand[param.protagonist] = __spreadArrays(G.hand[param.protagonist], [param.cardID]);
+        if (on.do.type === "return_to_hand") {
+            G.discardPile = _.without(G.discardPile, param.cardID);
+            G.hand[param.protagonist] = __spreadArray(__spreadArray([], G.hand[param.protagonist], true), [param.cardID], false);
         }
-        else if (on["do"].type === "add_scene") {
-            game_1._addSceneFromDo(G, ctx, card.id, param.protagonist, "any");
+        else if (on.do.type === "add_scene") {
+            (0, game_1._addSceneFromDo)(G, ctx, card.id, param.protagonist, "any");
         }
     });
 }
@@ -569,7 +571,7 @@ function findSacrificeTargets(G, ctx, protagonist, info) {
     if (info.type === "unicorn") {
         G.stable[protagonist].forEach(function (c) {
             var card = G.deck[c];
-            if (card_1.isUnicorn(card)) {
+            if ((0, card_1.isUnicorn)(card)) {
                 if (G.playerEffects[protagonist].find(function (s) { return s.effect.key === "pandamonium"; }) === undefined) {
                     targets.push({ cardID: c });
                 }
@@ -583,8 +585,8 @@ function findSacrificeTargets(G, ctx, protagonist, info) {
 }
 exports.findSacrificeTargets = findSacrificeTargets;
 function search(G, ctx, param) {
-    G.drawPile = underscore_1["default"].shuffle(underscore_1["default"].without(G.drawPile, param.cardID));
-    G.hand[param.protagonist] = __spreadArrays(G.hand[param.protagonist], [param.cardID]);
+    G.drawPile = _.shuffle(_.without(G.drawPile, param.cardID));
+    G.hand[param.protagonist] = __spreadArray(__spreadArray([], G.hand[param.protagonist], true), [param.cardID], false);
 }
 function canSearch(G, ctx, protagonist, info) {
     return findSearchTargets(G, ctx, protagonist, info).length > 0;
@@ -601,7 +603,7 @@ function findSearchTargets(G, ctx, protagonist, info) {
         targets = G.drawPile.map(function (c) { return G.deck[c]; }).filter(function (c) { return c.type === "narwhal"; }).map(function (c) { return ({ cardID: c.id }); });
     }
     if (info.type === "unicorn") {
-        targets = G.drawPile.map(function (c) { return G.deck[c]; }).filter(function (c) { return card_1.isUnicorn(c); }).map(function (c) { return ({ cardID: c.id }); });
+        targets = G.drawPile.map(function (c) { return G.deck[c]; }).filter(function (c) { return (0, card_1.isUnicorn)(c); }).map(function (c) { return ({ cardID: c.id }); });
     }
     if (info.type === "upgrade") {
         targets = G.drawPile.map(function (c) { return G.deck[c]; }).filter(function (c) { return c.type === "upgrade"; }).map(function (c) { return ({ cardID: c.id }); });
@@ -610,7 +612,7 @@ function findSearchTargets(G, ctx, protagonist, info) {
 }
 exports.findSearchTargets = findSearchTargets;
 function revive(G, ctx, param) {
-    G.discardPile = underscore_1["default"].without(G.discardPile, param.cardID);
+    G.discardPile = _.without(G.discardPile, param.cardID);
     enter(G, ctx, { playerID: param.protagonist, cardID: param.cardID });
 }
 function canRevive(G, ctx, protagonist, info) {
@@ -621,7 +623,7 @@ function findReviveTarget(G, ctx, protagonist, info) {
     if (info.type === "unicorn") {
         targets = G.discardPile.filter(function (c) {
             var card = G.deck[c];
-            return card_1.isUnicorn(card) && canEnter(G, ctx, { playerID: protagonist, cardID: c });
+            return (0, card_1.isUnicorn)(card) && canEnter(G, ctx, { playerID: protagonist, cardID: c });
         }).map(function (c) { return ({ cardID: c }); });
     }
     if (info.type === "basic_unicorn") {
@@ -634,15 +636,15 @@ function findReviveTarget(G, ctx, protagonist, info) {
 }
 exports.findReviveTarget = findReviveTarget;
 function draw(G, ctx, param) {
-    var toDraw = underscore_1["default"].first(G.drawPile, param.count);
-    G.drawPile = underscore_1["default"].rest(G.drawPile, param.count);
-    G.hand[param.protagonist] = __spreadArrays(G.hand[param.protagonist], toDraw);
+    var toDraw = _.first(G.drawPile, param.count);
+    G.drawPile = _.rest(G.drawPile, param.count);
+    G.hand[param.protagonist] = __spreadArray(__spreadArray([], G.hand[param.protagonist], true), toDraw, true);
 }
 function canDraw(G, ctx, param) {
     return G.drawPile.length >= param.count;
 }
 function addFromDiscardPileToHand(G, ctx, param) {
-    G.discardPile = underscore_1["default"].without(G.discardPile, param.cardID);
+    G.discardPile = _.without(G.discardPile, param.cardID);
     G.hand[param.protagonist].push(param.cardID);
 }
 function canAddFromDiscardPileToHand(G, ctx, protagonist, info) {
@@ -654,13 +656,13 @@ function findAddFromDiscardPileToHand(G, ctx, protagonist, info) {
         targets = G.discardPile.map(function (c) { return G.deck[c]; }).filter(function (c) { return c.type === info.type; }).map(function (c) { return ({ cardID: c.id }); });
     }
     if (info.type === "unicorn") {
-        targets = G.discardPile.map(function (c) { return G.deck[c]; }).filter(function (c) { return card_1.isUnicorn(c); }).map(function (c) { return ({ cardID: c.id }); });
+        targets = G.discardPile.map(function (c) { return G.deck[c]; }).filter(function (c) { return (0, card_1.isUnicorn)(c); }).map(function (c) { return ({ cardID: c.id }); });
     }
     return targets;
 }
 exports.findAddFromDiscardPileToHand = findAddFromDiscardPileToHand;
 function reviveFromNursery(G, ctx, param) {
-    G.nursery = underscore_1["default"].without(G.nursery, param.cardID);
+    G.nursery = _.without(G.nursery, param.cardID);
     enter(G, ctx, { playerID: param.protagonist, cardID: param.cardID });
 }
 function canReviveFromNursery(G, ctx, protagonist) {
@@ -681,8 +683,8 @@ function findReturnToHandTargets(G, ctx, protagonist, info) {
     var targets = [];
     if (info.who === "another") {
         G.players.filter(function (pl) { return pl.id !== protagonist; }).forEach(function (pl) {
-            targets = __spreadArrays(targets, G.stable[pl.id].map(function (c) { return ({ playerID: pl.id, cardID: c }); }));
-            targets = __spreadArrays(targets, G.upgradeDowngradeStable[pl.id].map(function (c) { return ({ playerID: pl.id, cardID: c }); }));
+            targets = __spreadArray(__spreadArray([], targets, true), G.stable[pl.id].map(function (c) { return ({ playerID: pl.id, cardID: c }); }), true);
+            targets = __spreadArray(__spreadArray([], targets, true), G.upgradeDowngradeStable[pl.id].map(function (c) { return ({ playerID: pl.id, cardID: c }); }), true);
         });
     }
     return targets;
@@ -693,7 +695,7 @@ function canReturnToHand(G, ctx, protagonist, info) {
 }
 function bringToStable(G, ctx, param) {
     enter(G, ctx, { playerID: param.protagonist, cardID: param.cardID });
-    G.hand[param.protagonist] = underscore_1["default"].without(G.hand[param.protagonist], param.cardID);
+    G.hand[param.protagonist] = _.without(G.hand[param.protagonist], param.cardID);
 }
 function findBringToStableTargets(G, ctx, protagonist, info) {
     var targets = [];
@@ -719,10 +721,10 @@ function findSwapHandsTargets(G, ctx, protagonist) {
 }
 exports.findSwapHandsTargets = findSwapHandsTargets;
 function shakeUp(G, ctx, param) {
-    G.drawPile = underscore_1["default"].shuffle(__spreadArrays(G.drawPile, [param.sourceCardID], G.hand[param.protagonist], G.discardPile));
+    G.drawPile = _.shuffle(__spreadArray(__spreadArray(__spreadArray(__spreadArray([], G.drawPile, true), [param.sourceCardID], false), G.hand[param.protagonist], true), G.discardPile, true));
     G.discardPile = [];
-    G.hand[param.protagonist] = underscore_1["default"].first(G.drawPile, 5);
-    G.drawPile = underscore_1["default"].rest(G.drawPile, 5);
+    G.hand[param.protagonist] = _.first(G.drawPile, 5);
+    G.drawPile = _.rest(G.drawPile, 5);
 }
 function reset(G, ctx, param) {
     G.players.forEach(function (pl) {
@@ -730,7 +732,7 @@ function reset(G, ctx, param) {
             sacrifice(G, ctx, { protagonist: pl.id, cardID: cardID });
         });
     });
-    G.drawPile = underscore_1["default"].shuffle(__spreadArrays(G.drawPile, G.discardPile));
+    G.drawPile = _.shuffle(__spreadArray(__spreadArray([], G.drawPile, true), G.discardPile, true));
 }
 function move(G, ctx, param) {
     var from = findOwnerOfCard(G, param.cardID);
@@ -740,7 +742,7 @@ function move(G, ctx, param) {
 function findMoveTargets(G, ctx, protagonist, info) {
     var targets = [];
     G.players.forEach(function (pl) {
-        targets = __spreadArrays(targets, G.upgradeDowngradeStable[pl.id].map(function (c) { return ({ cardID: c, playerID: pl.id }); }));
+        targets = __spreadArray(__spreadArray([], targets, true), G.upgradeDowngradeStable[pl.id].map(function (c) { return ({ cardID: c, playerID: pl.id }); }), true);
     });
     return targets;
 }
@@ -761,7 +763,7 @@ function findMoveTargets2(G, ctx, protagonist) {
 }
 exports.findMoveTargets2 = findMoveTargets2;
 function shuffleDiscardPileIntoDrawPile(G, ctx, param) {
-    G.drawPile = underscore_1["default"].shuffle(__spreadArrays(G.drawPile, G.discardPile));
+    G.drawPile = _.shuffle(__spreadArray(__spreadArray([], G.drawPile, true), G.discardPile, true));
     G.discardPile = [];
 }
 function backKick(G, ctx, param) {
@@ -775,7 +777,7 @@ function findBackKickTargets(G, ctx, protagonist) {
         if (pl.id === protagonist) {
             return;
         }
-        __spreadArrays(G.stable[pl.id], G.upgradeDowngradeStable[pl.id]).forEach(function (c) {
+        __spreadArray(__spreadArray([], G.stable[pl.id], true), G.upgradeDowngradeStable[pl.id], true).forEach(function (c) {
             targets.push({ cardID: c });
         });
     });
@@ -790,7 +792,7 @@ function findUnicornSwap1Targets(G, ctx, protagonist) {
     var targets = [];
     G.stable[protagonist].forEach(function (c) {
         var card = G.deck[c];
-        if (card_1.isUnicorn(card)) {
+        if ((0, card_1.isUnicorn)(card)) {
             if (G.playerEffects[protagonist].find(function (s) { return s.effect.key === "pandamonium"; }) === undefined) {
                 targets.push({ cardID: c });
             }
@@ -819,24 +821,24 @@ function blatantThievery1(G, ctx, param) {
 }
 function makeSomeoneDiscard(G, ctx, param) {
     G.script.scenes.push({
-        id: underscore_1["default"].uniqueId(),
+        id: _.uniqueId(),
         mandatory: true,
         actions: [{
                 type: "action",
                 instructions: [{
-                        id: underscore_1["default"].uniqueId(),
+                        id: _.uniqueId(),
                         protagonist: param.playerID,
                         state: "open",
                         ui: {
                             type: "click_on_own_card_in_hand"
                         },
-                        "do": {
+                        do: {
                             key: "discard",
                             info: { count: 1, type: "any" }
                         }
                     }]
             }],
-        endTurnImmediately: false
+        endTurnImmediately: false,
     });
 }
 function findMakeSomeoneDiscardTarget(G, ctx, protagonist) {
@@ -874,13 +876,36 @@ function interveneDestroyBySacrifice(G: UnstableUnicornsGame, ctx: Ctx, param: P
 */
 /////////////////////////////////////////////////
 var KeyToFunc = {
-    steal: steal, pull: pull, pullRandom: pullRandom, discard: discard, destroy: destroy, sacrifice: sacrifice, search: search, revive: revive, draw: draw, addFromDiscardPileToHand: addFromDiscardPileToHand, reviveFromNursery: reviveFromNursery, returnToHand: returnToHand, bringToStable: bringToStable, makeSomeoneDiscard: makeSomeoneDiscard, swapHands: swapHands, shakeUp: shakeUp, move: move, move2: move2, reset: reset, shuffleDiscardPileIntoDrawPile: shuffleDiscardPileIntoDrawPile, backKick: backKick, unicornSwap1: unicornSwap1, unicornSwap2: unicornSwap2, blatantThievery1: blatantThievery1
+    steal: steal,
+    pull: pull,
+    pullRandom: pullRandom,
+    discard: discard,
+    destroy: destroy,
+    sacrifice: sacrifice,
+    search: search,
+    revive: revive,
+    draw: draw,
+    addFromDiscardPileToHand: addFromDiscardPileToHand,
+    reviveFromNursery: reviveFromNursery,
+    returnToHand: returnToHand,
+    bringToStable: bringToStable,
+    makeSomeoneDiscard: makeSomeoneDiscard,
+    swapHands: swapHands,
+    shakeUp: shakeUp,
+    move: move,
+    move2: move2,
+    reset: reset,
+    shuffleDiscardPileIntoDrawPile: shuffleDiscardPileIntoDrawPile,
+    backKick: backKick,
+    unicornSwap1: unicornSwap1,
+    unicornSwap2: unicornSwap2,
+    blatantThievery1: blatantThievery1,
 };
 /////////////////////////////////////////////////
 //
 // Helper
 //
-exports._findInstructionWithID = function (G, instructionID) {
+var _findInstructionWithID = function (G, instructionID) {
     var scene = null;
     var action = null;
     var instruction = null;
@@ -900,6 +925,7 @@ exports._findInstructionWithID = function (G, instructionID) {
     }
     return null;
 };
+exports._findInstructionWithID = _findInstructionWithID;
 var _findInstructionInProgress = function (G) {
     var scene = null;
     var action = null;
@@ -923,7 +949,7 @@ var _findInstructionInProgress = function (G) {
 function findOwnerOfCard(G, cardID) {
     var playerID = null;
     G.players.forEach(function (pl) {
-        if (__spreadArrays(G.stable[pl.id], G.upgradeDowngradeStable[pl.id]).findIndex(function (c) { return c === cardID; }) > -1) {
+        if (__spreadArray(__spreadArray([], G.stable[pl.id], true), G.upgradeDowngradeStable[pl.id], true).findIndex(function (c) { return c === cardID; }) > -1) {
             playerID = pl.id;
         }
     });

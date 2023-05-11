@@ -10,33 +10,35 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
 };
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 exports._findInstruction = exports._findInProgressScenesWithProtagonist = exports._findOpenScenesWithProtagonist = exports._addSceneFromDo = exports.canDraw = exports.canPlayCard = void 0;
 var do_1 = require("./do");
 var card_1 = require("./card");
 var constants_1 = require("./constants");
 var do_2 = require("./do");
-var underscore_1 = require("underscore");
+var _ = require("underscore");
 var UnstableUnicorns = {
     name: "unstable_unicorns",
     setup: function (ctx, setupData) {
         var players = Array.from({ length: ctx.numPlayers }, function (val, idx) {
             return {
-                id: "" + idx,
-                name: "Spieler " + idx
+                id: "".concat(idx),
+                name: "Spieler ".concat(idx),
             };
         });
-        var deck = card_1.initializeDeck();
+        var deck = (0, card_1.initializeDeck)();
         var discardPile = [];
         var nursery = [];
-        var drawPile = underscore_1["default"].shuffle(deck).filter(function (c) { return c.type !== "baby"; }).map(function (c) { return c.id; });
+        var drawPile = _.shuffle(deck).filter(function (c) { return c.type !== "baby"; }).map(function (c) { return c.id; });
         var hand = {};
         var stable = {};
         var temporaryStable = {};
@@ -45,8 +47,8 @@ var UnstableUnicorns = {
         var ready = {};
         players.forEach(function (pl) {
             ready[pl.id] = false;
-            hand[pl.id] = underscore_1["default"].first(drawPile, constants_1.CONSTANTS.numberOfHandCardsAtStart);
-            drawPile = underscore_1["default"].rest(drawPile, constants_1.CONSTANTS.numberOfHandCardsAtStart);
+            hand[pl.id] = _.first(drawPile, constants_1.CONSTANTS.numberOfHandCardsAtStart);
+            drawPile = _.rest(drawPile, constants_1.CONSTANTS.numberOfHandCardsAtStart);
             stable[pl.id] = [];
             temporaryStable[pl.id] = [];
             upgradeDowngradeStable[pl.id] = [];
@@ -73,7 +75,7 @@ var UnstableUnicorns = {
             uiHoverHandIndex: undefined,
             uiExecuteDo: undefined,
             uiCardToCard: undefined,
-            lastNeighResult: undefined
+            lastNeighResult: undefined,
         };
     },
     phases: {
@@ -103,9 +105,9 @@ var UnstableUnicorns = {
                 G.countPlayedCardsInActionPhase = 0;
                 G.mustEndTurnImmediately = false;
                 // begin of turn: add scene
-                __spreadArrays(G.stable[ctx.currentPlayer], G.upgradeDowngradeStable[ctx.currentPlayer]).forEach(function (c) { return _addSceneFromDo(G, ctx, c, ctx.currentPlayer, "begin_of_turn"); });
+                __spreadArray(__spreadArray([], G.stable[ctx.currentPlayer], true), G.upgradeDowngradeStable[ctx.currentPlayer], true).forEach(function (c) { return _addSceneFromDo(G, ctx, c, ctx.currentPlayer, "begin_of_turn"); });
                 // begin of turn: add effect
-                __spreadArrays(G.stable[ctx.currentPlayer], G.upgradeDowngradeStable[ctx.currentPlayer]).forEach(function (c) {
+                __spreadArray(__spreadArray([], G.stable[ctx.currentPlayer], true), G.upgradeDowngradeStable[ctx.currentPlayer], true).forEach(function (c) {
                     var _a;
                     var card = G.deck[c];
                     var cardOnBegin = (_a = card.on) === null || _a === void 0 ? void 0 : _a.filter(function (c) { return c.trigger === "begin_of_turn"; });
@@ -119,11 +121,11 @@ var UnstableUnicorns = {
                         }
                     }
                     if (cardOnBegin) {
-                        cardOnBegin.filter(function (on) { return on["do"].type === "add_effect"; }).forEach(function (on) {
-                            var doAddEffect = on["do"];
+                        cardOnBegin.filter(function (on) { return on.do.type === "add_effect"; }).forEach(function (on) {
+                            var doAddEffect = on.do;
                             // check if effect has already been added
                             if (G.playerEffects[ctx.currentPlayer].filter(function (s) { return s.cardID === c; }).length === 0) {
-                                G.playerEffects[ctx.currentPlayer] = __spreadArrays(G.playerEffects[ctx.currentPlayer], [{ cardID: c, effect: doAddEffect.info }]);
+                                G.playerEffects[ctx.currentPlayer] = __spreadArray(__spreadArray([], G.playerEffects[ctx.currentPlayer], true), [{ cardID: c, effect: doAddEffect.info }], false);
                             }
                         });
                     }
@@ -145,7 +147,18 @@ var UnstableUnicorns = {
             },
             action_phase: {
                 moves: {
-                    commit: commit, executeDo: do_2.executeDo, end: end, drawAndEnd: drawAndEnd, playCard: playCard, playUpgradeDowngradeCard: playUpgradeDowngradeCard, playNeigh: playNeigh, playSuperNeigh: playSuperNeigh, dontPlayNeigh: dontPlayNeigh, skipExecuteDo: skipExecuteDo, setUIHoverHandIndex: setUIHoverHandIndex, setUICardToCard: setUICardToCard
+                    commit: commit,
+                    executeDo: do_2.executeDo,
+                    end: end,
+                    drawAndEnd: drawAndEnd,
+                    playCard: playCard,
+                    playUpgradeDowngradeCard: playUpgradeDowngradeCard,
+                    playNeigh: playNeigh,
+                    playSuperNeigh: playSuperNeigh,
+                    dontPlayNeigh: dontPlayNeigh,
+                    skipExecuteDo: skipExecuteDo,
+                    setUIHoverHandIndex: setUIHoverHandIndex,
+                    setUICardToCard: setUICardToCard
                 }
             }
         }
@@ -159,7 +172,7 @@ function initializeGame(G, ctx) {
     G.babyStarter.forEach(function (_a) {
         var cardID = _a.cardID, owner = _a.owner;
         G.stable[owner].push(cardID);
-        a = underscore_1["default"].without(a, cardID);
+        a = _.without(a, cardID);
     });
     a.forEach(function (cardId) {
         G.nursery.push(cardId);
@@ -171,7 +184,7 @@ function changeName(G, ctx, protagonist, name) {
 function ready(G, ctx, protagonist) {
     var _a;
     G.ready[protagonist] = true;
-    if (underscore_1["default"].every(underscore_1["default"].values(G.ready), function (bo) { return bo; })) {
+    if (_.every(_.values(G.ready), function (bo) { return bo; })) {
         initializeGame(G, ctx);
         (_a = ctx.events) === null || _a === void 0 ? void 0 : _a.setPhase("main");
     }
@@ -184,56 +197,67 @@ function selectBaby(G, ctx, protagonist, cardID) {
 }
 function drawAndAdvance(G, ctx) {
     var _a;
-    G.hand[ctx.currentPlayer].push(underscore_1["default"].first(G.drawPile));
-    G.drawPile = underscore_1["default"].rest(G.drawPile, 1);
+    G.hand[ctx.currentPlayer].push(_.first(G.drawPile));
+    G.drawPile = _.rest(G.drawPile, 1);
     (_a = ctx.events) === null || _a === void 0 ? void 0 : _a.setActivePlayers({ all: "action_phase" });
     G.script = { scenes: [] };
 }
 function canPlayCard(G, ctx, protagonist, cardID) {
     if (ctx.currentPlayer === protagonist && ctx.activePlayers[protagonist] === "action_phase" && (G.countPlayedCardsInActionPhase === 0 || (G.countPlayedCardsInActionPhase === 1 && G.playerEffects[protagonist].find(function (c) { return c.effect.key === "double_dutch"; })))) {
-        return do_1.canEnter(G, ctx, { playerID: protagonist, cardID: cardID });
+        return (0, do_1.canEnter)(G, ctx, { playerID: protagonist, cardID: cardID });
     }
     return false;
 }
 exports.canPlayCard = canPlayCard;
 function playCard(G, ctx, protagonist, cardID) {
     G.countPlayedCardsInActionPhase = G.countPlayedCardsInActionPhase + 1;
-    G.hand[protagonist] = underscore_1["default"].without(G.hand[protagonist], cardID);
+    G.hand[protagonist] = _.without(G.hand[protagonist], cardID);
+    var playerState = {};
+    for (var _i = 0, _a = G.players; _i < _a.length; _i++) {
+        var player = _a[_i];
+        playerState[player.id] = { vote: player.id === protagonist ? "no_neigh" : "undecided" };
+    }
     if (G.playerEffects[protagonist].findIndex(function (f) { return f.effect.key === "your_cards_cannot_be_neighed"; }) > -1) {
-        do_1.enter(G, ctx, { playerID: protagonist, cardID: cardID });
+        (0, do_1.enter)(G, ctx, { playerID: protagonist, cardID: cardID });
     }
     else {
         // resolve neigh
         G.neighDiscussion = {
-            cardID: cardID, protagonist: protagonist, rounds: [{
-                    state: "open",
-                    playerState: Object.fromEntries(G.players.map(function (pl) { return ([pl.id, { vote: pl.id === protagonist ? "no_neigh" : "undecided" }]); }))
-                }],
-            target: protagonist
+            cardID: cardID,
+            protagonist: protagonist,
+            rounds: [{ state: "open", playerState: playerState }],
+            target: protagonist,
         };
     }
 }
 function playUpgradeDowngradeCard(G, ctx, protagonist, targetPlayer, cardID) {
     G.countPlayedCardsInActionPhase = G.countPlayedCardsInActionPhase + 1;
-    G.hand[protagonist] = underscore_1["default"].without(G.hand[protagonist], cardID);
+    G.hand[protagonist] = _.without(G.hand[protagonist], cardID);
     if (G.playerEffects[protagonist].findIndex(function (f) { return f.effect.key === "your_cards_cannot_be_neighed"; }) > -1) {
-        do_1.enter(G, ctx, { playerID: targetPlayer, cardID: cardID });
+        (0, do_1.enter)(G, ctx, { playerID: targetPlayer, cardID: cardID });
     }
     else {
         // resolve neigh
+        var playerState = {};
+        for (var _i = 0, _a = G.players; _i < _a.length; _i++) {
+            var player = _a[_i];
+            playerState[player.id] = { vote: player.id === protagonist ? "no_neigh" : "undecided" };
+        }
         G.neighDiscussion = {
-            cardID: cardID, protagonist: protagonist, rounds: [{
+            cardID: cardID,
+            protagonist: protagonist,
+            rounds: [{
                     state: "open",
-                    playerState: Object.fromEntries(G.players.map(function (pl) { return ([pl.id, { vote: pl.id === protagonist ? "no_neigh" : "undecided" }]); }))
+                    playerState: playerState,
                 }],
-            target: targetPlayer
+            target: targetPlayer,
         };
     }
 }
 function playNeigh(G, ctx, cardID, protagonist, roundIndex) {
     if (G.neighDiscussion) {
-        G.hand[protagonist] = underscore_1["default"].without(G.hand[protagonist], cardID);
-        G.discardPile = __spreadArrays(G.discardPile, [cardID]);
+        G.hand[protagonist] = _.without(G.hand[protagonist], cardID);
+        G.discardPile = __spreadArray(__spreadArray([], G.discardPile, true), [cardID], false);
         var round = G.neighDiscussion.rounds[roundIndex];
         // check if there was already a neigh vote during this round
         // if yes do nothing
@@ -242,18 +266,23 @@ function playNeigh(G, ctx, cardID, protagonist, roundIndex) {
         }
         // there was no neigh round yet
         // hence neigh the round and add a next round
-        round.playerState[protagonist] = { vote: "neigh" };
+        var playerState = {};
+        for (var _i = 0, _a = G.players; _i < _a.length; _i++) {
+            var player = _a[_i];
+            playerState[player.id] = { vote: player.id === protagonist ? "no_neigh" : "undecided" };
+        }
+        round.playerState = playerState;
         round.state = "neigh";
         G.neighDiscussion.rounds.push({
             state: "open",
-            playerState: Object.fromEntries(G.players.map(function (pl) { return ([pl.id, { vote: pl.id === protagonist ? "no_neigh" : "undecided" }]); }))
+            playerState: playerState,
         });
     }
 }
 function playSuperNeigh(G, ctx, cardID, protagonist, roundIndex) {
     if (G.neighDiscussion) {
-        G.hand[protagonist] = underscore_1["default"].without(G.hand[protagonist], cardID);
-        G.discardPile = __spreadArrays(G.discardPile, [cardID]);
+        G.hand[protagonist] = _.without(G.hand[protagonist], cardID);
+        G.discardPile = __spreadArray(__spreadArray([], G.discardPile, true), [cardID], false);
         var round = G.neighDiscussion.rounds[roundIndex];
         // check if there was already a neigh vote during this round
         // if yes do nothing
@@ -267,11 +296,11 @@ function playSuperNeigh(G, ctx, cardID, protagonist, roundIndex) {
         var cardWasNeighed = (G.neighDiscussion.rounds.length + 1) % 2 === 0;
         if (cardWasNeighed) {
             G.discardPile.push(G.neighDiscussion.cardID);
-            G.lastNeighResult = { id: underscore_1["default"].uniqueId(), result: "cardWasNeighed" };
+            G.lastNeighResult = { id: _.uniqueId(), result: "cardWasNeighed" };
         }
         else {
-            do_1.enter(G, ctx, { playerID: G.neighDiscussion.protagonist, cardID: G.neighDiscussion.cardID });
-            G.lastNeighResult = { id: underscore_1["default"].uniqueId(), result: "cardWasPlayed" };
+            (0, do_1.enter)(G, ctx, { playerID: G.neighDiscussion.protagonist, cardID: G.neighDiscussion.cardID });
+            G.lastNeighResult = { id: _.uniqueId(), result: "cardWasPlayed" };
         }
         G.neighDiscussion = undefined;
     }
@@ -281,16 +310,16 @@ function dontPlayNeigh(G, ctx, protagonist, roundIndex) {
     if (G.neighDiscussion) {
         var round = G.neighDiscussion.rounds[roundIndex];
         round.playerState[protagonist] = { vote: "no_neigh" };
-        if (underscore_1["default"].findKey(round.playerState, function (val) { return val.vote === "undecided"; }) === undefined) {
+        if (_.findKey(round.playerState, function (val) { return val.vote === "undecided"; }) === undefined) {
             // everyone has voted => advance the game
             var cardWasNeighed = G.neighDiscussion.rounds.length % 2 === 0;
             if (cardWasNeighed) {
                 G.discardPile.push(G.neighDiscussion.cardID);
-                G.lastNeighResult = { id: underscore_1["default"].uniqueId(), result: "cardWasNeighed" };
+                G.lastNeighResult = { id: _.uniqueId(), result: "cardWasNeighed" };
             }
             else {
-                do_1.enter(G, ctx, { playerID: G.neighDiscussion.target, cardID: G.neighDiscussion.cardID });
-                G.lastNeighResult = { id: underscore_1["default"].uniqueId(), result: "cardWasPlayed" };
+                (0, do_1.enter)(G, ctx, { playerID: G.neighDiscussion.target, cardID: G.neighDiscussion.cardID });
+                G.lastNeighResult = { id: _.uniqueId(), result: "cardWasPlayed" };
             }
             G.neighDiscussion = undefined;
         }
@@ -322,8 +351,8 @@ function canDraw(G, ctx) {
 exports.canDraw = canDraw;
 function drawAndEnd(G, ctx) {
     G.script = { scenes: [] };
-    G.hand[ctx.currentPlayer].push(underscore_1["default"].first(G.drawPile));
-    G.drawPile = underscore_1["default"].rest(G.drawPile, 1);
+    G.hand[ctx.currentPlayer].push(_.first(G.drawPile));
+    G.drawPile = _.rest(G.drawPile, 1);
     G.countPlayedCardsInActionPhase = G.countPlayedCardsInActionPhase + 1;
 }
 function end(G, ctx, protagonist) {
@@ -332,16 +361,16 @@ function end(G, ctx, protagonist) {
         G.playerEffects[protagonist] = G.playerEffects[protagonist].filter(function (o) { return o.effect.key !== "change_of_luck"; });
         if (G.hand[protagonist].length > 7) {
             var newScene = {
-                id: underscore_1["default"].uniqueId(),
+                id: _.uniqueId(),
                 mandatory: true,
                 endTurnImmediately: false,
                 actions: [{
                         type: "action",
                         instructions: [{
-                                id: underscore_1["default"].uniqueId(),
+                                id: _.uniqueId(),
                                 protagonist: protagonist,
                                 state: "open",
-                                "do": {
+                                do: {
                                     key: "discard",
                                     info: { count: G.hand[protagonist].length - 7, type: "any" }
                                 },
@@ -349,7 +378,7 @@ function end(G, ctx, protagonist) {
                             }]
                     }]
             };
-            G.script.scenes = __spreadArrays(G.script.scenes, [newScene]);
+            G.script.scenes = __spreadArray(__spreadArray([], G.script.scenes, true), [newScene], false);
         }
         else {
             (_a = ctx.events) === null || _a === void 0 ? void 0 : _a.endTurn({ next: protagonist });
@@ -358,16 +387,16 @@ function end(G, ctx, protagonist) {
     else {
         if (G.hand[protagonist].length > 7) {
             var newScene = {
-                id: underscore_1["default"].uniqueId(),
+                id: _.uniqueId(),
                 mandatory: true,
                 endTurnImmediately: false,
                 actions: [{
                         type: "action",
                         instructions: [{
-                                id: underscore_1["default"].uniqueId(),
+                                id: _.uniqueId(),
                                 protagonist: protagonist,
                                 state: "open",
-                                "do": {
+                                do: {
                                     key: "discard",
                                     info: { count: G.hand[protagonist].length - 7, type: "any" }
                                 },
@@ -375,7 +404,7 @@ function end(G, ctx, protagonist) {
                             }]
                     }]
             };
-            G.script.scenes = __spreadArrays(G.script.scenes, [newScene]);
+            G.script.scenes = __spreadArray(__spreadArray([], G.script.scenes, true), [newScene], false);
         }
         else {
             (_b = ctx.events) === null || _b === void 0 ? void 0 : _b.endTurn();
@@ -386,8 +415,8 @@ function commit(G, ctx, sceneID) {
     G.script.scenes.find(function (sc) { return sc.id === sceneID; }).mandatory = true;
 }
 function skipExecuteDo(G, ctx, protagonist, instructionID) {
-    if (do_1._findInstructionWithID(G, instructionID) !== null) {
-        var _a = do_1._findInstructionWithID(G, instructionID), scene = _a[0], action = _a[1], instruction = _a[2];
+    if ((0, do_1._findInstructionWithID)(G, instructionID) !== null) {
+        var _a = (0, do_1._findInstructionWithID)(G, instructionID), scene = _a[0], action = _a[1], instruction = _a[2];
         console.log("cc");
         action.instructions.filter(function (ins) { return ins.protagonist === protagonist; }).forEach(function (ins) { return ins.state = "executed"; });
     }
@@ -400,13 +429,13 @@ function setUIHoverHandIndex(G, ctx, index) {
 }
 function setUICardToCard(G, ctx, param) {
     if (param !== undefined) {
-        G.uiCardToCard = __assign(__assign({}, param), { id: underscore_1["default"].uniqueId() });
+        G.uiCardToCard = __assign(__assign({}, param), { id: _.uniqueId() });
     }
     else {
         G.uiCardToCard = undefined;
     }
 }
-exports["default"] = UnstableUnicorns;
+exports.default = UnstableUnicorns;
 // Helper
 function _addSceneFromDo(G, ctx, cardID, owner, trigger) {
     var card = G.deck[cardID];
@@ -423,12 +452,12 @@ function _addSceneFromDo(G, ctx, cardID, owner, trigger) {
         }
     }
     card.on.forEach(function (on) {
-        if (on["do"].type === "add_scene" && (on.trigger === trigger || trigger === "any")) {
+        if (on.do.type === "add_scene" && (on.trigger === trigger || trigger === "any")) {
             var newScene = {
-                id: underscore_1["default"].uniqueId(),
-                mandatory: on["do"].info.mandatory,
-                endTurnImmediately: on["do"].info.endTurnImmediately,
-                actions: on["do"].info.actions.map(function (ac) {
+                id: _.uniqueId(),
+                mandatory: on.do.info.mandatory,
+                endTurnImmediately: on.do.info.endTurnImmediately,
+                actions: on.do.info.actions.map(function (ac) {
                     var instructions = [];
                     ac.instructions.forEach(function (c) {
                         var protagonists = [];
@@ -440,11 +469,11 @@ function _addSceneFromDo(G, ctx, cardID, owner, trigger) {
                         }
                         protagonists.forEach(function (pid) {
                             instructions.push({
-                                id: underscore_1["default"].uniqueId(),
+                                id: _.uniqueId(),
                                 protagonist: pid,
                                 state: "open",
-                                "do": c["do"],
-                                ui: __assign(__assign({}, c.ui), { info: __assign({ source: card.id }, c.ui.info) })
+                                do: c.do,
+                                ui: __assign(__assign({}, c.ui), { info: __assign({ source: card.id }, c.ui.info) }),
                             });
                         });
                     });
@@ -455,7 +484,7 @@ function _addSceneFromDo(G, ctx, cardID, owner, trigger) {
                     return action;
                 })
             };
-            G.script.scenes = __spreadArrays(G.script.scenes, [newScene]);
+            G.script.scenes = __spreadArray(__spreadArray([], G.script.scenes, true), [newScene], false);
         }
     });
 }
@@ -488,7 +517,7 @@ function _findInProgressScenesWithProtagonist(G, protagonist) {
     var stop = false;
     G.script.scenes.forEach(function (scene) {
         if (scene.mandatory) {
-            var action = underscore_1["default"].first(scene.actions);
+            var action = _.first(scene.actions);
             if (action.instructions.filter(function (ins) { return ins.state === "open" || ins.state === "in_progress"; }).length > 0) {
                 stop = true;
                 var inst = action.instructions.filter(function (ins) { return ins.protagonist === protagonist && (ins.state === "open" || ins.state === "in_progress"); });
